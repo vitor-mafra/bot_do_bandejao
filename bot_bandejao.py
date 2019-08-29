@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup
 
 #chaves geradas pelo app do twitter
 CONSUMER_KEY = '*****************************************'
-CONSUMER_SECRET = '*****************************************'
-ACCESS_KEY = '*****************************************'
-ACCESS_SECRET = '*****************************************'
+CONSUMER_SECRET = '*****************************************'   #nao vou posta-las aqui porque com
+ACCESS_KEY = '*****************************************'        #essas chaves eh possivel publicar 
+ACCESS_SECRET = '*****************************************'     #tweets em minha conta
 
 #site da fump
 site_fump = "http://www.fump.ufmg.br/cardapio.aspx"
