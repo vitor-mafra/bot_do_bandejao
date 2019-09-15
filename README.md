@@ -1,4 +1,4 @@
-# @bot_bandejao_UFMG
+# Bot bandejão UFMG
 <p align="center">
 <img src="https://cdn.dribbble.com/users/179241/screenshots/3634911/chris-fernandez-hoagie-bot-2.png" width="300" height="225">
 </p>
