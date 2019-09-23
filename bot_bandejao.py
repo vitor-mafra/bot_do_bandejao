@@ -2,16 +2,16 @@ import tweepy
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys #apenas pra facilitar a leitura do codigo
-import time
 import datetime
+import time
 
 
 #"constantes" - bem, talvez nao exatamente
     #chaves geradas pelo app do twitter
-CONSUMER_KEY = '******************'
-CONSUMER_SECRET = '************************************'
-ACCESS_KEY = '******************-******************'
-ACCESS_SECRET = '************************************'
+CONSUMER_KEY = '**********************'
+CONSUMER_SECRET = '********************************************'
+ACCESS_KEY = '**********************-**********************'
+ACCESS_SECRET = '********************************************'
     #paginas web necessarias para buscar o cardapio
 site_fump = "http://www.fump.ufmg.br/cardapio.aspx"
     #restaurantes
@@ -24,7 +24,7 @@ restaurantes_almoco_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO, RU_ICA)
 restaurantes_jantar_seg_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO, RU_ICA)
 
 #setting webbrowser
-browser = webdriver.Firefox()
+browser = webdriver.Firefox()   ,
     
 #setting API (https://tweepy.readthedocs.io/en/latest/getting_started.html#hello-tweepy)
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
@@ -108,7 +108,7 @@ def encontra_cardapio(almoco, jantar):
             if count < 7:              # itera ate a primeira parte do cardapio (titulo + proteinas + guarnicao)
                 cardapio_almoco_tratado += letra 
             elif (count > 12) and (count <= 14):   # pula as partes que sao parte fixa do cardapio
-                cardapio_almoco_tratado += letra   # itera pela parte das sobremesas
+                cardapio_almoco_tratado += letra   # itea pela parte das sobremesas
         return cardapio_almoco_tratado
 
     elif jantar:
@@ -126,6 +126,20 @@ def encontra_cardapio(almoco, jantar):
                cardapio_jantar_tratado += letra
         return cardapio_jantar_tratado
 
+'''
+def confere_cardapio(cardapio):
+    count_caracteres = 0
+    for letra in cardapio:
+        count_caracteres += 1
+    #confere se ele eh tuitavel, ie, tem menos de 280 caracteres
+    if (count_caracteres <= 280):
+        mais_280_caracteres = False
+    else:
+        mais_280_caracteres = True
+
+    return mais_280_caracteres # a ideia eh definir outros tipos de possiveis erros aqui nessa funcao e retorna-los todos juntos
+'''
+
 #tweetando (ou ao menos tentando)
 def faz_tweet(restaurante, cardapio):
     if restaurante ==  RU_SETORIAL_I:
@@ -141,34 +155,82 @@ def faz_tweet(restaurante, cardapio):
         string_restaurante = "Cardapio RU ICA - "
 
     tweet = string_restaurante + cardapio
-    print(tweet)
-    
-    #verificacao se o cardapio esta pronto para ser tweetado
+
+    count_caracteres = 0
+    for letra in tweet:
+        count_caracteres += 1
+    #confere se ele eh tuitavel, ie, tem menos de 280 caracteres
+    if (count_caracteres <= 280): # nao tem problema tuitar
+        mais_280_caracteres = False
+    else:                          # nao eh tuitavel e por isso precisa ser dividido
+        mais_280_caracteres = True
+        
+        count_linhas = 0
+        cardapio_parte_1 = ''
+        cardapio_parte_2 = ''
+        for letra in tweet:
+            if letra == '\n':
+                count_linhas += 1
+            if count_linhas < 7: # itera ate chegar a parte da guarnicao
+                cardapio_parte_1 += letra # e guarda tudo isso em uma parte
+            elif count_linhas == 7:  # itera ate a sobremesa
+                cardapio_parte_2 += string_restaurante + cardapio[:6] +' (continuação)' + '\n\n'
+                count_linhas += 1
+            elif count_linhas >= 7 and count_linhas <= 11:   
+                cardapio_parte_2 += letra # e guarda tudo isso em outra parte
+
+        tweet_1 = cardapio_parte_1
+        tweet_2 = cardapio_parte_2
+
+    #verificacao se o cardapio esta pronto para ser tuitado
     if (cardapio == None):
         print("Erro ao tentar encontrar o cardapio\n")
         tentar_novamente = True
         return tentar_novamente
         #tweet = "Tive problemas ao acessar o cardapio, tentarei novamente mais tarde"
+        #print(tweet)
     else:
+        #finalmente tuitando
         try:
-            api.update_status(tweet)
-            print("\n**********************\n")
-            print("Tweet publicado com sucesso!\n")
+            if not mais_280_caracteres: 
+                api.update_status(tweet)
+                print(tweet)
+                print("\nTem mais de 280 caracteres = ", mais_280_caracteres)
+                print("\nTweet publicado com sucesso!\n")
+                print("*****************************\n")
+            else:
+                tweet = api.update_status(tweet_1)
+                time.sleep(3) # espera um tempo para ter certeza de que o tweet foi publicado
+                api.update_status(tweet_2, in_reply_to_status_id = tweet.id_str)
+                print(tweet_1)
+                print("\n--------outro tweet--------\n")
+                print(tweet_2)
+                print("\nTem mais de 280 caracteres = ", mais_280_caracteres)
         except:
             print("Erro ao tweetar!\n")
-        
+
+
 def vai_bot(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab):
     if almoco:
-        for restaurante in restaurantes_almoco_seg_sex:
-            cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
-            faz_tweet(restaurante, cardapio)
-            #postou = True
+        if seg_sex:
+            for restaurante in restaurantes_almoco_seg_sex:
+                cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
+                faz_tweet(restaurante, cardapio, erros cardapio)
+                #postou = True
+        else:
+            for restaurante in restaurantes_almoco_sab:
+                cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
+                faz_tweet(restaurante, cardapio, erros cardapio)
     elif jantar:
         for restaurante in restaurantes_jantar_seg_sab:
             cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
             faz_tweet(restaurante, cardapio)
             #postou = True
-    
+
+
+almoco = True
+jantar = False
+
 '''
 seconds = time.time()
 hora_local = time.ctime(seconds) 
@@ -188,16 +250,13 @@ elif (agora >= horario_postagem_jantar):
     jantar = True
     print('Jantar!')
 '''
-almoco = True
-jantar = False
 
 #tentar_novamente = False
 #count_tentativas = 0
 
 
-vai_bot(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+#vai_bot(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
 
-browser.quit()
 
 '''
 if tentar_novamente: #tentou e nao conseguiu achar o cardapio
@@ -215,3 +274,4 @@ browser.quit()
 
  get_text()    IMPORTANTE, LIMPA AS TAGS E PEGA SOMENTE O TEXTO
 '''
+browser.quit()
