@@ -21,12 +21,12 @@ RU_SAUDE_E_DIREITO = 3
 RU_ICA = 4
 restaurantes_almoco_seg_sex = (RU_SETORIAL_I, RU_SETORIAL_II, RU_SAUDE_E_DIREITO, RU_ICA)
 restaurantes_almoco_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO, RU_ICA)
-#restaurantes_jantar_seg_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO)
-restaurantes_jantar_seg_sab = (RU_ICA, RU_ICA)
+restaurantes_jantar_seg_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO)
+#restaurantes_jantar_seg_sab = (RU_ICA, RU_ICA)
 
     # variaveis relacionandas ao tempo
-almoco = True
-jantar = False
+almoco = False
+jantar = True
 dia_da_semana = datetime.datetime.today().weekday() # Segunda = 0, Terca = 1 ... Domingo = 6
 
 #setting webbrowser
@@ -126,7 +126,7 @@ def encontra_cardapio(almoco, jantar):
                 count += 1
             if count == 17:                           # se pegar a string original fica "\nJantar", fiz isso provisoriamente
                 cardapio_jantar_tratado += 'Jantar\n' # arrumar depois
-                count += 1
+                #count += 1
             if count > 18 and count < 23:
                 cardapio_jantar_tratado += letra
             elif count == 29:
@@ -200,16 +200,16 @@ def faz_tweet(restaurante, cardapio):
         #finalmente tuitando
         try:
             if not mais_280_caracteres: 
-                api.update_status(tweet)
+                #api.update_status(tweet)
                 print(tweet)
                 print("\nTem mais de 280 caracteres = ", mais_280_caracteres)
                 print("\nTweet publicado com sucesso!\n")
                 print("*****************************\n")
                 tweetou = True
             else:
-                tweet = api.update_status(tweet_1)
-                time.sleep(3) # espera um tempo para ter certeza de que o tweet foi publicado
-                api.update_status(tweet_2, in_reply_to_status_id = tweet.id_str)
+                #tweet = api.update_status(tweet_1)
+                #time.sleep(3) # espera um tempo para ter certeza de que o tweet foi publicado
+                #api.update_status(tweet_2, in_reply_to_status_id = tweet.id_str)
                 print(tweet_1)
                 print("\n--------outro tweet--------\n")
                 print(tweet_2)
