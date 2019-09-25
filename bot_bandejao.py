@@ -21,10 +21,16 @@ RU_SAUDE_E_DIREITO = 3
 RU_ICA = 4
 restaurantes_almoco_seg_sex = (RU_SETORIAL_I, RU_SETORIAL_II, RU_SAUDE_E_DIREITO, RU_ICA)
 restaurantes_almoco_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO, RU_ICA)
-restaurantes_jantar_seg_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO, RU_ICA)
+#restaurantes_jantar_seg_sab = (RU_SETORIAL_I, RU_SAUDE_E_DIREITO)
+restaurantes_jantar_seg_sab = (RU_ICA, RU_ICA)
+
+    # variaveis relacionandas ao tempo
+almoco = True
+jantar = False
+dia_da_semana = datetime.datetime.today().weekday() # Segunda = 0, Terca = 1 ... Domingo = 6
 
 #setting webbrowser
-browser = webdriver.Firefox()   ,
+browser = webdriver.Firefox()   
     
 #setting API (https://tweepy.readthedocs.io/en/latest/getting_started.html#hello-tweepy)
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
@@ -120,6 +126,7 @@ def encontra_cardapio(almoco, jantar):
                 count += 1
             if count == 17:                           # se pegar a string original fica "\nJantar", fiz isso provisoriamente
                 cardapio_jantar_tratado += 'Jantar\n' # arrumar depois
+                count += 1
             if count > 18 and count < 23:
                 cardapio_jantar_tratado += letra
             elif count == 29:
@@ -185,8 +192,8 @@ def faz_tweet(restaurante, cardapio):
     #verificacao se o cardapio esta pronto para ser tuitado
     if (cardapio == None):
         print("Erro ao tentar encontrar o cardapio\n")
-        tentar_novamente = True
-        return tentar_novamente
+        #tentar_novamente = True
+        #return tentar_novamente
         #tweet = "Tive problemas ao acessar o cardapio, tentarei novamente mais tarde"
         #print(tweet)
     else:
@@ -198,6 +205,7 @@ def faz_tweet(restaurante, cardapio):
                 print("\nTem mais de 280 caracteres = ", mais_280_caracteres)
                 print("\nTweet publicado com sucesso!\n")
                 print("*****************************\n")
+                tweetou = True
             else:
                 tweet = api.update_status(tweet_1)
                 time.sleep(3) # espera um tempo para ter certeza de que o tweet foi publicado
@@ -206,37 +214,133 @@ def faz_tweet(restaurante, cardapio):
                 print("\n--------outro tweet--------\n")
                 print(tweet_2)
                 print("\nTem mais de 280 caracteres = ", mais_280_caracteres)
+                tweetou = True
         except:
-            print("Erro ao tweetar!\n")
+            if not tweetou:
+                tweetou = False
+                print("Erro ao tweetar!\n")
+    return tweetou
 
 
-def vai_bot(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab):
+def acessa_e_tweeta(almoco, jantar, dia_da_semana, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab):
     if almoco:
-        if seg_sex:
+        if dia_da_semana < 5: # se nao eh fim de semana
             for restaurante in restaurantes_almoco_seg_sex:
                 cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
-                faz_tweet(restaurante, cardapio, erros cardapio)
-                #postou = True
-        else:
+                tweetou = faz_tweet(restaurante, cardapio)
+                if not tweetou: # se nao tiver tweetado, guarda o nome desse restaurante em uma lista para tentar novamente depois
+                    restaurantes_nao_tweetados = []
+                    restaurantes_nao_tweetados.append(restaurante)
+                    return restaurantes_nao_tweetados
+
+
+        elif dia_da_semana == 5: # se eh sabado
             for restaurante in restaurantes_almoco_sab:
                 cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
-                faz_tweet(restaurante, cardapio, erros cardapio)
+                tweetou = faz_tweet(restaurante, cardapio)
+                if not tweetou: # se nao tiver tweetado, guarda o nome desse restaurante em uma lista para tentar novamente depois
+                    restaurantes_nao_tweetados = []
+                    restaurantes_nao_tweetados.append(restaurante)
+                    return restaurantes_nao_tweetados
+
     elif jantar:
-        for restaurante in restaurantes_jantar_seg_sab:
-            cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
-            faz_tweet(restaurante, cardapio)
-            #postou = True
+        if dia_da_semana < 6: # se nao eh domingo
+            for restaurante in restaurantes_jantar_seg_sab:
+                cardapio = pega_cardapio(site_fump, restaurante, almoco, jantar)
+                tweetou = faz_tweet(restaurante, cardapio)
+                if not tweetou: # se nao tiver tweetado, guarda o nome desse restaurante em uma lista para tentar novamente depois
+                    restaurantes_nao_tweetados = []
+                    restaurantes_nao_tweetados.append(restaurante)
+                    return restaurantes_nao_tweetados
+
+'''
+# definindo o horario de postagem do cardapio
+agora_almoco = datetime.datetime.now()
+horario_postagem_almoco = agora_almoco.replace(hour=9, minute=0, second=0, microsecond=0)
+agora_limite_almoco = datetime.datetime.now()
+horario_limite_postagem_almoco = agora_limite_almoco.replace(hour=9, minute=5, second=0, microsecond=0)
+
+agora_jantar = datetime.datetime.now()
+horario_postagem_jantar = agora_jantar.replace(hour=17, minute=0, second=0, microsecond=0)
+agora_limite_jantar = datetime.datetime.now()
+horario_limite_postagem_jantar = agora_limite_jantar.replace(hour=17, minute=5, second=0, microsecond=0)
+
+agora_3 = datetime.datetime.now()
+meia_noite = agora_3.replace(hour=0, minute=0, second=1, microsecond=0)
 
 
-almoco = True
-jantar = False
+horario_atual = datetime.datetime.now()
+
+while True:
+    
+    while horario_atual > horario_postagem_jantar: #como meia noite eh 0h, ele espera virar o dia pra comecar a comparar 
+        time.sleep(60)                              # de novo ate postar o cardapio do almoco
+        horario_atual = datetime.datetime.now() #update hora atual                                                                                                          
+    
+    while horario_atual < horario_limite_postagem_almoco: 
+        time.sleep(60) # confere, minuto a minuto a hora
+        horario_atual = datetime.datetime.now() #update hora atual
+        if horario_atual >= horario_postagem_almoco:
+            almoco = True
+            jantar = False
+            restaurantes_nao_tweetados = acessa_e_tweeta(almoco, jantar, dia_da_semana, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+
+    while horario_atual < horario_limite_postagem_almoco: 
+        time.sleep(60) # confere, minuto a minuto a hora
+        horario_atual = datetime.datetime.now() #update hora atual
+        if horario_atual >= horario_postagem_almoco:
+            almoco = True
+            jantar = False
+            restaurantes_nao_tweetados = acessa_e_tweeta(almoco, jantar, dia_da_semana, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+
+
+    while(horario_atual > horario_postagem_almoco and horario_atual < horario_postagem_jantar):
+        time.sleep(60)
+        horario_atual = datetime.datetime.now()
+        print(horario_atual)
+        print("Espera")
+        print("FOI!")   
+'''
+
+restaurantes_nao_tweetados = acessa_e_tweeta(almoco, jantar, dia_da_semana, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+browser.quit() # fecha as abas abertas no navegador
+
+
+
+'''
+if len(restaurantes_nao_tweetados) > 0: # sei que essa forma de comparacao nao eh Pythonic, mas achei assim melhor fazer essa checagem de forma explicita
+    for restaurante in restaurantes_nao_tweetados:
+        count_tentativas = 0
+        tweet_falhou = "Não consegui encontrar o cardápio do {}. Tentarei novamente em 15 minutos".format(str(restaurante))
+        api.update_status(tweet_falhou)
+
+        #if count_tentativas = 1 
+        #tweet
+        time.sleep(900) #espera 15 min
+        count_tentativas += 1
+
+        if count_tentativas <= 4: #so tenta acessar o cardapio 4 vezes (uma a cada 15 min)
+            if almoco:
+                if dia_da_semana < 5:
+                    restaurantes_almoco_seg_sex = restaurantes_nao_tweetados 
+                    acessa_e_tweeta(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+
+                elif dia_da_semana == 5:
+                    restaurantes_almoco_sab = restaurantes_nao_tweetados
+                    acessa_e_tweeta(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+
+            elif jantar:
+                restaurantes_jantar_seg_sab = restaurantes_nao_tweetados
+                acessa_e_tweeta(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
+'''
+
 
 '''
 seconds = time.time()
 hora_local = time.ctime(seconds) 
 print(hora_local)
-'''
-'''
+
+
 agora = datetime.datetime.now()
 horario_postagem_almoco = datetime.datetime.now.replace(hour = 9, minute = 0, second = 0, microsecond = 0)
 horario_postagem_jantar = datetime.datetime.now.replace(hour = 17, minute = 0, second = 0, microsecond = 0)
@@ -249,29 +353,11 @@ elif (agora >= horario_postagem_jantar):
     almoco = False
     jantar = True
     print('Jantar!')
-'''
+
 
 #tentar_novamente = False
 #count_tentativas = 0
 
 
 #vai_bot(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
-
-
 '''
-if tentar_novamente: #tentou e nao conseguiu achar o cardapio
-    #tweet =
-    #if count_tentativas = 1 
-    #tweet
-    time.sleep(900) #espera 15 min
-    count_tentativas += 1
-
-    if count_tentativas < 3: #so tenta acessar o cardapio 2 vezes (30 min de espera total)
-        vai_bot(almoco, jantar, restaurantes_almoco_seg_sex, restaurantes_almoco_sab, restaurantes_jantar_seg_sab)
-        
-
-browser.quit()
-
- get_text()    IMPORTANTE, LIMPA AS TAGS E PEGA SOMENTE O TEXTO
-'''
-browser.quit()
