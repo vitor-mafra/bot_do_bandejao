@@ -9,6 +9,7 @@ This bot will search on UFMG restaurant's website for the menu (lunch and dinner
 
 ### to do
 - [x] AWS-ec2
+- [ ] update readme
 - [ ] ~~make it less shitier~~ refact and modularize
 - [ ] padronize it
 - [ ] make an API?
