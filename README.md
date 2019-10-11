@@ -6,3 +6,9 @@
 art by [Chris Fernandez](https://dribbble.com/shots/3634911-Nom-Nom-Nom)
 
 This bot will search on UFMG restaurant's website for the menu (lunch and dinner) of the day. It will post this content on [@bot_RU_UFMG](https://twitter.com/bot_RU_UFMG) Twitter profile to make easier to other students make the decision of where to eat
+
+to-do
+[x] AWS-ec2
+[] refact and modularize the code
+[] padronize it
+[] make an API?
