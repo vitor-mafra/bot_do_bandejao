@@ -9,11 +9,6 @@ import time
 
 # Essa parte inicial traz "constantes" e informacoes usadas ao longo do codigo
 
-# chaves geradas pelo Twitter para postagens no seu perfil (de desenvolvedor)
-CONSUMER_KEY = '**********************'
-CONSUMER_SECRET = '********************************************'
-ACCESS_KEY = '**********************-**********************'
-ACCESS_SECRET = '********************************************'
 
 # paginas web necessarias para buscar o cardapio
 site_fump = "http://www.fump.ufmg.br/cardapio.aspx"
