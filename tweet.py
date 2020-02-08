@@ -13,4 +13,3 @@ with open("secret_user_keys.txt", "r") as user_keys:
             keys[key] = user_keys.readline().rstrip()
 
 user_keys.close()
-print(keys)
