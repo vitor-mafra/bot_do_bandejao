@@ -5,7 +5,7 @@
 
 art by [Chris Fernandez](https://dribbble.com/shots/3634911-Nom-Nom-Nom)
 
-This bot will search on UFMG restaurant's website for the menu (lunch and dinner) of the day. It will post this content on [@bot_RU_UFMG](https://twitter.com/bot_RU_UFMG) Twitter profile to make easier to other students make the decision of where to eat
+This bot searches on UFMG restaurant's website looking for the menu (lunch and dinner) of the day. Then, post this content on [@bot_RU_UFMG](https://twitter.com/bot_RU_UFMG) Twitter profile, making easier to other students choose where to eat
 
 ### to do
 - [ ] update readme
