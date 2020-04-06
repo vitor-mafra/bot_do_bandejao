@@ -10,11 +10,15 @@ def main():
     for restaurante in environment.restaurantes:
         print(restaurante, ": ")
         encontrou_cardapio = scrapper.pega_cardapio(restaurante)
-        
+
         if encontrou_cardapio:
             print("Tudo certo!\n")
-            texto_tweet = tweet.elabora_tweet(restaurante, environment.cardapio,\
-                                        environment.almoco, environment.jantar)
+            texto_tweet = tweet.elabora_tweet(
+                restaurante,
+                environment.cardapio,
+                environment.almoco,
+                environment.jantar,
+            )
 
             api = tweet.setup_for_tweet(environment.keys)
 
@@ -22,11 +26,11 @@ def main():
 
             if novo_tweet:
                 texto_tweet = novo_tweet
-            
+
             print(texto_tweet)
-            
-            tweet.tweeta(api, texto_tweet, mais_280_caracteres)            
-            
+
+            tweet.tweeta(api, texto_tweet, mais_280_caracteres)
+
         else:
             print("Ops........")
             # tenta encontrar de novo, mais tarde
@@ -34,5 +38,5 @@ def main():
     scrapper.browser.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
