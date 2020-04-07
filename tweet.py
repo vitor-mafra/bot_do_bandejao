@@ -48,7 +48,9 @@ def setup_for_tweet(keys):
 
 def tweeta(api, texto_tweet, mais_280_caracteres):
     """
-    Publica o tweet no perfil do bot (@bot_RU_UFMG)
+    Publica o tweet no perfil do bot (@bot_RU_UFMG), caso tenha mais do que 280
+    caracteres - i.e. a quantidade maxima de caracteres permitidas por tweet -
+    divide a postagem em duas e posta como uma curta thread
     """
     if not mais_280_caracteres:
         api.update_status(texto_tweet)
@@ -62,6 +64,10 @@ def tweeta(api, texto_tweet, mais_280_caracteres):
 
 def elabora_tweet(restaurante, cardapio, almoco, jantar):
     """
+    Elabora o texto que sera tweetado de acordo com o restaurante em questao, 
+    tipo de refeicao e o cardapio em si. Para melhor visualizacao dos elementos
+    do cardapio, agrupa eles de acordo com seus tipos - faz deixando uma linha 
+    em branco para separar essas categorias
     """
     if restaurante == environment.restaurantes["RU_SETORIAL_I"]:
         texto_restaurante = "Cardápio RU Setorial I"
@@ -118,7 +124,6 @@ def confere_tweet(tweet):
     se o texto original tem mais de 280 caracteres (limite maximo que um tweet
     pode ter). Retorna um booleano que indica isso
     """
-
     if environment.almoco:
         termos_obrigatorios = [
             "Prato protéico 1",
