@@ -8,8 +8,7 @@ import time
 # configurando o browser
 chrome_options = webdriver.chrome.options.Options()
 chrome_options.headless = True  # nao queremos uma interface grafica
-browser = webdriver.Chrome("/home/vitor/Downloads/chromedriver", \
-    options=chrome_options)
+browser = webdriver.Chrome("/home/vitor/Downloads/chromedriver", options=chrome_options)
 
 
 def seleciona_caixa_de_selecao(restaurante):
@@ -18,13 +17,12 @@ def seleciona_caixa_de_selecao(restaurante):
     sera consultado. Faz a requisicao ao site da FUMP e, a partir desse ponto, 
     deixa as informacoes referentes ao cardapio no HTML da pagina
     """
-    caixa_de_selecao = browser.find_element_by_id(\
-        "contentPlaceHolder_drpRestaurante")
+    caixa_de_selecao = browser.find_element_by_id("contentPlaceHolder_drpRestaurante")
 
     try:
         if restaurante == environment.restaurantes["RU_SETORIAL_I"]:
             caixa_de_selecao.click()
-            # como eh o segundo elemento da caixa de selecao, temos que enviar 
+            # como eh o segundo elemento da caixa de selecao, temos que enviar
             # a tecla "DOWN" uma vez
             caixa_de_selecao.send_keys(Keys.DOWN)
 
@@ -41,8 +39,7 @@ def seleciona_caixa_de_selecao(restaurante):
         elif restaurante == environment.restaurantes["RU_ICA"]:
             caixa_de_selecao.click()
             # quinto elemento da caixa de selecao
-            caixa_de_selecao.send_keys(Keys.DOWN, Keys.DOWN, Keys.DOWN,\
-                 Keys.DOWN)
+            caixa_de_selecao.send_keys(Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.DOWN)
 
         # enfim, confirma a selecao
         caixa_de_selecao.send_keys(Keys.ENTER)
@@ -94,8 +91,7 @@ def encontra_cardapio():
 
         # garante que o dicionario nao tera valores atribuidos (possivelmente
         # valores dos cardapios anteriores
-        environment.cardapio = environment.cardapio.fromkeys(\
-            environment.cardapio, "")
+        environment.cardapio = environment.cardapio.fromkeys(environment.cardapio, "")
 
         encontrou_cardapio = False
 
