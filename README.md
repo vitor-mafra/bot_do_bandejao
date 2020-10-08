@@ -17,10 +17,10 @@ art by [Chris Fernandez](https://dribbble.com/shots/3634911-Nom-Nom-Nom)
 This bot searches on UFMG restaurant's website looking for the menu (lunch and dinner) of the day. Then, post this content on [@bot_RU_UFMG](https://twitter.com/bot_RU_UFMG) Twitter profile, making easier to other students choose where to eat
 
 ### A few projects based on this one
-- twitter.com/BandejaoBotUFRJ
-- twitter.com/Cardapio_IF_bot
-- twitter.com/ufv_ru
-- twitter.com/cardapioUSP
+- [BandejaoBotUFRJ's Twitter](twitter.com/BandejaoBotUFRJ) and [BandejaoBotUFRJ's GitHub](https://github.com/liaporto/bandejaobot-ufrj/tree/master)
+- [Cardapio_IF_bot's Twitter](twitter.com/Cardapio_IF_bot) and [Cardapio_IF_bot's GitHub](https://github.com/pedroaf0/Cardapio_twitter_Bot) 
+- [ufv_ru's Twitter](twitter.com/ufv_ru) and [ufv_ru's GitHub](https://github.com/coelhobf/ufv_ru_bot)
+- [cardapioUSP's Twitter](twitter.com/cardapioUSP) and [cardapioUSP's Twitter](https://github.com/ViniciusFH/bandejao-usp)
 
 ### to do
 - [ ] update readme
