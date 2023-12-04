@@ -14,7 +14,7 @@
 
 art by [Chris Fernandez](https://dribbble.com/shots/3634911-Nom-Nom-Nom)
 
-This bot searches on UFMG restaurant's website looking for the menu (lunch and dinner) of the day. Then, post this content on [@bot_RU_UFMG](https://twitter.com/bot_RU_UFMG) Twitter profile, making easier to other students choose where to eat
+This bot searches on UFMG restaurant's website looking for the menu (lunch and dinner) of the day. Then, post this content on [@bot_RU_UFMG](https://twitter.com/bot_do_bandejao) Twitter profile, making easier to other students choose where to eat
 
 ### A few projects based on this one
 - [BandejaoBotUFRJ's Twitter](twitter.com/BandejaoBotUFRJ) and [BandejaoBotUFRJ's GitHub](https://github.com/liaporto/bandejaobot-ufrj/tree/master)
