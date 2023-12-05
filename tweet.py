@@ -6,7 +6,7 @@ def get_keys(keys):
     """
     Le em um arquivo cada uma das chaves/tokens de autenticacao fornecidos
     pelo Twitter para publicar na conta do bot e armazana esses dados em
-    um dicionario 
+    um dicionario
     """
     with open("secret_user_keys.txt", "r") as user_keys:
         for key in environment.keys:
@@ -64,9 +64,9 @@ def tweeta(api, texto_tweet, mais_280_caracteres):
 
 def elabora_tweet(restaurante, cardapio, almoco, jantar):
     """
-    Elabora o texto que sera tweetado de acordo com o restaurante em questao, 
+    Elabora o texto que sera tweetado de acordo com o restaurante em questao,
     tipo de refeicao e o cardapio em si. Para melhor visualizacao dos elementos
-    do cardapio, agrupa eles de acordo com seus tipos - faz deixando uma linha 
+    do cardapio, agrupa eles de acordo com seus tipos - faz deixando uma linha
     em branco para separar essas categorias
     """
     if restaurante == environment.restaurantes["RU_SETORIAL_I"]:
@@ -118,9 +118,9 @@ def elabora_tweet(restaurante, cardapio, almoco, jantar):
 def confere_tweet(tweet):
     """
     Busca pelo texto das tags que indicam os tipos  de prato do cardapio, que
-    sempre deveriam estar presentes. Caso algum desses tipos nao seja 
+    sempre deveriam estar presentes. Caso algum desses tipos nao seja
     encontrado, adiciona um emoji (⚠️) no tweet para indicar que possivelmente
-    aquele cardapio pode ter algum dos itens em falta. Depois disso, confere 
+    aquele cardapio pode ter algum dos itens em falta. Depois disso, confere
     se o texto original tem mais de 280 caracteres (limite maximo que um tweet
     pode ter). Retorna um booleano que indica isso
     """
