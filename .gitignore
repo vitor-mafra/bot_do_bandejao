@@ -6,3 +6,76 @@ geckodriver.log
 secret_user_keys.txt
 
 chromedriver
+
+# Visual Studio Code directories
+.vscode/
+.history
+
+# pyright
+.pyright
+
+# Environments
+.env
+.env.*
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+env1/
+venv1/
+myenv/
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Local development configuration
+.env
+
+# IDE files
+.idea/
+.vscode/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Compiled Python files
+*.pyc
+*.pyo
+
+# Python installer files
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version

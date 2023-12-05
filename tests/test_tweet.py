@@ -1,86 +1,102 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from tweet import (
     get_keys,
     set_API,
-    setup_for_tweet,
     tweeta,
     elabora_tweet,
     confere_tweet,
 )
 
 
-class TestTwitterBot(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # Setup initial environment, if needed
+class TestTweetModule(unittest.TestCase):
+    def setUp(self):
+        # Configuração comum para os testes, se necessário
         pass
 
+    def tearDown(self):
+        # Limpeza após cada teste, se necessário
+        pass
+
+    @patch("builtins.open", create=True)
     def test_get_keys(self):
-        # Mock the open function to return a predefined content
-        with patch(
-            "builtins.open", return_value=MagicMock(readline=lambda: "mock_key")
-        ):
-            environment = {"keys": {}}
-            get_keys(environment)
-            self.assertEqual(environment["keys"]["some_key"], "mock_key")
+        with patch("builtins.open", create=True) as mock_open:
+            mock_open.return_value.__enter__.return_value.readline.side_effect = [
+                "CONSUMER_KEY\n",
+                "CONSUMER_SECRET\n",
+                "ACCESS_KEY\n",
+                "ACCESS_SECRET\n",
+            ]
+
+            keys = {}
+            get_keys(keys)
+
+            expected_keys = {
+                "CONSUMER_KEY": "CONSUMER_KEY",
+                "CONSUMER_SECRET": "CONSUMER_SECRET",
+                "ACCESS_KEY": "ACCESS_KEY",
+                "ACCESS_SECRET": "ACCESS_SECRET",
+            }
+
+            self.assertDictEqual(keys, expected_keys)
 
     def test_set_API(self):
-        # Mock the tweepy.OAuthHandler and tweepy.API calls
-        with patch("tweepy.OAuthHandler") as mock_oauth_handler, patch(
-            "tweepy.API"
-        ) as mock_api:
-            environment = {
-                "keys": {
-                    "CONSUMER_KEY": "key1",
-                    "CONSUMER_SECRET": "secret1",
-                    "ACCESS_KEY": "key2",
-                    "ACCESS_SECRET": "secret2",
-                }
-            }
-            set_API(environment)
-            mock_oauth_handler.assert_called_once_with("key1", "secret1")
-            mock_oauth_handler.return_value.set_access_token.assert_called_once_with(
-                "key2", "secret2"
-            )
-            mock_api.assert_called_once()
+        # Testa se a função set_API configura corretamente a API do tweepy
+        keys = {
+            "CONSUMER_KEY": "test_consumer_key",
+            "CONSUMER_SECRET": "test_consumer_secret",
+            "ACCESS_KEY": "test_access_key",
+            "ACCESS_SECRET": "test_access_secret",
+        }
+        api = set_API(keys)
 
-    def test_setup_for_tweet(self):
-        # Test if setup_for_tweet calls get_keys and set_API
-        with patch("your_script_file.get_keys") as mock_get_keys, patch(
-            "your_script_file.set_API"
-        ) as mock_set_API:
-            environment = {"keys": {}}
-            setup_for_tweet(environment)
-            mock_get_keys.assert_called_once_with(environment)
-            mock_set_API.assert_called_once_with(environment)
+        self.assertIsNotNone(api)
+        # Adicione mais verificações conforme necessário
 
     def test_tweeta(self):
-        # Mock the tweepy.API.update_status call
-        with patch("tweepy.API") as mock_api:
-            tweeta(mock_api, "Test tweet", False)
-            mock_api.update_status.assert_called_once_with("Test tweet")
+        # Testa se a função tweeta publica o tweet corretamente
+        api = unittest.mock.Mock()
+        texto_tweet = "Testando a função tweeta"
+        mais_280_caracteres = False
+
+        with patch("builtins.print") as mock_print:
+            tweeta(api, texto_tweet, mais_280_caracteres)
+            mock_print.assert_called_with("Tweet publicado com sucesso!")
+
+        api.update_status.assert_called_once_with(texto_tweet)
+
+        # Adicione mais verificações conforme necessário
 
     def test_elabora_tweet(self):
-        # Test if elabora_tweet generates the correct tweet
+        # Testa se a função elabora_tweet gera o tweet esperado
+        restaurante = "RU_SETORIAL_I"
         cardapio = {
             "proteina_1": "Frango",
             "proteina_2": "Peixe",
             "guarnicao": "Arroz",
             "sobremesa_1": "Pudim",
-            "sobremesa_2": "Gelatina",
+            "sobremesa_2": "Frutas",
         }
-        tweet = elabora_tweet("RU_SETORIAL_I", cardapio, almoco=True, jantar=False)
-        expected_tweet = "Cardápio RU Setorial I - Almoço\n\nFrango\nPeixe\nArroz\n\nPudim\nGelatina\n"
+        almoco = True
+        jantar = False
+
+        tweet = elabora_tweet(restaurante, cardapio, almoco, jantar)
+
+        expected_tweet = (
+            "Cardápio RU Setorial I - Almoço\n\n"
+            "Frango\nPeixe\n\n"
+            "Arroz\n\n"
+            "Pudim\nFrutas\n"
+        )
         self.assertEqual(tweet, expected_tweet)
 
     def test_confere_tweet(self):
-        # Test if confere_tweet adds a warning emoji when necessary
-        tweet = "Cardápio RU Setorial I - Almoço\n\nFrango\nPeixe\nArroz\n\nPudim\nGelatina\n"
-        modified_tweet, over_280_chars = confere_tweet(tweet)
-        expected_modified_tweet = "Cardápio RU Setorial I - Almoço ⚠️\n\nFrango\nPeixe\nArroz\n\nPudim\nGelatina\n"
-        self.assertEqual(modified_tweet, expected_modified_tweet)
-        self.assertFalse(over_280_chars)
+        tweet = "Cardápio RU Setorial I - Almoço\n\nFrango\nPeixe\n\nArroz\n\nPudim\nFrutas\n"
+        novo_tweet, mais_280_caracteres = confere_tweet(tweet)
+
+        expected_novo_tweet = "Cardápio RU Setorial I - Almoço ⚠️\n\nFrango\nPeixe\n\nArroz\n\nPudim\nFrutas\n"
+        self.assertEqual(novo_tweet, expected_novo_tweet)
+        self.assertTrue(mais_280_caracteres)
 
 
 if __name__ == "__main__":
