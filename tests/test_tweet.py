@@ -10,14 +10,6 @@ from tweet import (
 
 
 class TestTweetModule(unittest.TestCase):
-    def setUp(self):
-        # Configuração comum para os testes, se necessário
-        pass
-
-    def tearDown(self):
-        # Limpeza após cada teste, se necessário
-        pass
-
     @patch("builtins.open", create=True)
     def test_get_keys(self):
         with patch("builtins.open", create=True) as mock_open:
@@ -51,7 +43,6 @@ class TestTweetModule(unittest.TestCase):
         api = set_API(keys)
 
         self.assertIsNotNone(api)
-        # Adicione mais verificações conforme necessário
 
     def test_tweeta(self):
         # Testa se a função tweeta publica o tweet corretamente
@@ -64,8 +55,6 @@ class TestTweetModule(unittest.TestCase):
             mock_print.assert_called_with("Tweet publicado com sucesso!")
 
         api.update_status.assert_called_once_with(texto_tweet)
-
-        # Adicione mais verificações conforme necessário
 
     def test_elabora_tweet(self):
         # Testa se a função elabora_tweet gera o tweet esperado

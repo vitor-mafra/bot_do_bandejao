@@ -177,14 +177,3 @@ def confere_tweet(tweet):
         mais_280_caracteres = False
 
     return novo_tweet, mais_280_caracteres
-
-
-"""
-TO DO:
-
-[] funcao que tenta buscar o cardapio de novo, caso ele nao tenha sido encontrado
-
-[] dividir o tweet em 2, caso ele tenha mais de 280 caracteres
-
-[] screenshot da pagina se o cardapio nao foi encontrado???
-"""
